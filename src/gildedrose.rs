@@ -52,49 +52,33 @@ impl GildedRose {
 
     pub fn update_quality(&mut self) {
         for item in &mut self.items {
-            if item.name != "Sulfuras, Hand of Ragnaros" {
-                if item.name != "Aged Brie"
-                    && item.name != "Backstage passes to a TAFKAL80ETC concert"
-                    && item.name != "Sulfuras, Hand of Ragnaros"
-                {
-                    item.update();
-                } else {
-                    figure_out_cheese(item);
-                    figure_out_backstage_passes(item);
-                }
+            match item.name.as_str() {
+                "Aged Brie" => figure_out_cheese(item),
+                "Backstage passes to a TAFKAL80ETC concert" => figure_out_backstage_passes(item),
+                "Sulfuras, Hand of Ragnaros" => (),
+                _ => item.update(),
             }
         }
     }
 }
 
 fn figure_out_cheese(item: &mut Item) {
-    match item.name.as_str() {
-        "Aged Brie" => {
-            if item.quality < 50 {
-                item.quality += 1;
-            }
-            item.sell_in -= 1;
-        }
-        _ => (),
+    if item.quality < 50 {
+        item.quality += 1;
     }
+    item.sell_in -= 1;
 }
 
 fn figure_out_backstage_passes(item: &mut Item) {
-    match item.name.as_str() {
-        "Backstage passes to a TAFKAL80ETC concert" => {
-            if item.quality < 50 {
-                match item {
-                    _ if (6..11).contains(&item.sell_in) => item.quality += 2,
-                    _ if (1..6).contains(&item.sell_in) => item.quality += 3,
-                    _ if item.sell_in <= 0 => item.quality = 0,
-                    _ => item.quality += 1,
-                }
-            }
-            item.sell_in -= 1;
+    if item.quality < 50 {
+        match item {
+            _ if (6..11).contains(&item.sell_in) => item.quality += 2,
+            _ if (1..6).contains(&item.sell_in) => item.quality += 3,
+            _ if item.sell_in <= 0 => item.quality = 0,
+            _ => item.quality += 1,
         }
-
-        _ => (),
     }
+    item.sell_in -= 1;
 }
 
 #[cfg(test)]
