@@ -55,23 +55,27 @@ impl GildedRose {
             if item.name != "Sulfuras, Hand of Ragnaros" {
                 if item.name != "Aged Brie"
                     && item.name != "Backstage passes to a TAFKAL80ETC concert"
+                    && item.name != "Sulfuras, Hand of Ragnaros"
                 {
                     item.update();
                 } else {
-                    if item.quality < 50 {
-                        item.quality += 1;
-                        figure_out_backstage_passes(item);
-                    }
-                    item.sell_in -= 1;
-                    if item.sell_in < 0 {
-                        if item.name != "Aged Brie" {
-                        } else if item.quality < 50 {
-                            item.quality += item.quality + 1;
-                        }
-                    }
+                    figure_out_cheese(item);
+                    figure_out_backstage_passes(item);
                 }
             }
         }
+    }
+}
+
+fn figure_out_cheese(item: &mut Item) {
+    match item.name.as_str() {
+        "Aged Brie" => {
+            if item.quality < 50 {
+                item.quality += 1;
+            }
+            item.sell_in -= 1;
+        }
+        _ => (),
     }
 }
 
@@ -80,24 +84,13 @@ fn figure_out_backstage_passes(item: &mut Item) {
         "Backstage passes to a TAFKAL80ETC concert" => {
             if item.quality < 50 {
                 match item {
-                    Item {
-                        sell_in: _,
-                        quality: _,
-                        ..
-                    } if item.sell_in < 11 && item.sell_in >= 6 => item.quality += 1,
-                    Item {
-                        sell_in: _,
-                        quality: _,
-                        ..
-                    } if item.sell_in < 6 && item.sell_in > 0 => item.quality += 2,
-                    Item {
-                        sell_in: _,
-                        quality: _,
-                        ..
-                    } if item.sell_in <= 0 => item.quality = 0,
-                    _ => (),
+                    _ if (6..11).contains(&item.sell_in) => item.quality += 2,
+                    _ if (1..6).contains(&item.sell_in) => item.quality += 3,
+                    _ if item.sell_in <= 0 => item.quality = 0,
+                    _ => item.quality += 1,
                 }
             }
+            item.sell_in -= 1;
         }
 
         _ => (),
