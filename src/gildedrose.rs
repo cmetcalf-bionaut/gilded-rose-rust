@@ -125,4 +125,23 @@ mod tests {
         // then quality degrades twice as fast
         assert_eq!(quality - 2, rose.items[0].quality);
     }
+
+    #[test]
+    pub fn the_quality_of_an_item_never_negative_following_update() {
+        // Given a general item
+        let name = "General Item";
+        let sell_in = 0;
+        let quality = 0;
+
+        let items = vec![Item::new(name, sell_in, quality)];
+        let mut rose = GildedRose::new(items);
+
+        // when updated
+        rose.update_quality();
+
+        // quality is positive! :D
+        assert!(quality >= 0);
+    }
+
+
 }
