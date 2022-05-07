@@ -41,7 +41,6 @@ impl CanUpdateOwnDamnedSelf for Item {
     }
 }
 
-
 pub struct GildedRose {
     pub items: Vec<Item>,
 }
@@ -53,14 +52,8 @@ impl GildedRose {
 
     pub fn update_quality(&mut self) {
         for item in &mut self.items {
-            if item.name != "Aged Brie" && item.name != "Backstage passes to a TAFKAL80ETC concert"
+            if item.name == "Aged Brie" || item.name == "Backstage passes to a TAFKAL80ETC concert"
             {
-                if item.quality > 0 {
-                    if item.name != "Sulfuras, Hand of Ragnaros" {
-                        item.quality = item.quality - 1;
-                    }
-                }
-            } else {
                 if item.quality < 50 {
                     item.quality = item.quality + 1;
 
@@ -76,6 +69,12 @@ impl GildedRose {
                                 item.quality = item.quality + 1;
                             }
                         }
+                    }
+                }
+            } else {
+                if item.quality > 0 {
+                    if item.name != "Sulfuras, Hand of Ragnaros" {
+                        item.quality = item.quality - 1;
                     }
                 }
             }
@@ -107,7 +106,7 @@ impl GildedRose {
 
 #[cfg(test)]
 mod tests {
-    use super::{GildedRose, Item, CanUpdateOwnDamnedSelf};
+    use super::{CanUpdateOwnDamnedSelf, GildedRose, Item};
 
     // Legendary items have 80 quality.
     // That's a lot of quality, if you didn't know.
