@@ -95,6 +95,9 @@ mod tests {
     // Probably like, BTS or NKOTB or something.
     const KPOP_BOY_BAND_OMG: &str = "Backstage passes to a TAFKAL80ETC concert";
 
+    // mmm.
+    const CON_QUESO: &str = "Aged Brie";
+
     impl Default for Item {
         fn default() -> Item {
             Item {
@@ -164,7 +167,6 @@ mod tests {
     #[test]
     fn aged_bried_increases_quality_the_older_it_gets() {
         const CHEESE_FACTOR: i32 = 1;
-        const CON_QUESO: &str = "Aged Brie";
 
         // Given a chunk of delicious Brie. Mmmm...
         // just warmed up in the oven, and covered in jalepeno jelly...
@@ -191,10 +193,9 @@ mod tests {
     fn quality_never_updates_above_50_if_initially_under_50() {
         // Given a high quality item which could only improve with age
         const TOP_NOTCH_STUFF: i32 = 50;
-        const TO_THE_MOON: &str = "Aged Brie";
 
         let bitcoin = Item {
-            name: TO_THE_MOON.into(),
+            name: CON_QUESO.into(),
             quality: TOP_NOTCH_STUFF,
             ..Item::default()
         };
@@ -205,7 +206,7 @@ mod tests {
 
         // quality does not increase greater than 50
         assert!(rose.items[0].quality <= TOP_NOTCH_STUFF);
-        assert_eq!(TO_THE_MOON, rose.items[0].name);
+        assert_eq!(CON_QUESO, rose.items[0].name);
     }
 
     #[test]
