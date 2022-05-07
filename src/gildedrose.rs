@@ -21,6 +21,7 @@ impl Display for Item {
     }
 }
 
+// NO touching anytthing above this point !!
 trait CanUpdateOwnDamnedSelf {
     fn update(&mut self);
 }
@@ -37,6 +38,35 @@ impl CanUpdateOwnDamnedSelf for Item {
     }
 }
 
+struct IsCheese<'a>(&'a mut Item);
+impl CanUpdateOwnDamnedSelf for IsCheese<'_> {
+    fn update(&mut self) {
+        let IsCheese(item) = self;
+        if item.quality < 50 {
+            item.quality += 1;
+        }
+        item.sell_in -= 1;
+    }
+}
+
+struct IsTickets<'a>(&'a mut Item);
+impl CanUpdateOwnDamnedSelf for IsTickets<'_> {
+    fn update(&mut self) {
+        let IsTickets(item) = self;
+        match item {
+            _ if (6..11).contains(&item.sell_in) => item.quality += 2,
+            _ if (1..6).contains(&item.sell_in) => item.quality += 3,
+            _ if item.sell_in <= 0 => item.quality = 0,
+            _ => item.quality += 1,
+        }
+
+        if item.quality >= 50 {
+            item.quality = 50;
+        }
+        item.sell_in -= 1;
+    }
+}
+
 pub struct GildedRose {
     pub items: Vec<Item>,
 }
@@ -49,34 +79,13 @@ impl GildedRose {
     pub fn update_quality(&mut self) {
         for item in &mut self.items {
             match item.name.as_str() {
-                "Aged Brie" => figure_out_cheese(item),
-                "Backstage passes to a TAFKAL80ETC concert" => figure_out_backstage_passes(item),
+                "Aged Brie" => IsCheese(item).update(),
+                "Backstage passes to a TAFKAL80ETC concert" => IsTickets(item).update(),
                 "Sulfuras, Hand of Ragnaros" => (),
                 _ => item.update(),
             }
         }
     }
-}
-
-fn figure_out_cheese(item: &mut Item) {
-    if item.quality < 50 {
-        item.quality += 1;
-    }
-    item.sell_in -= 1;
-}
-
-fn figure_out_backstage_passes(item: &mut Item) {
-    match item {
-        _ if (6..11).contains(&item.sell_in) => item.quality += 2,
-        _ if (1..6).contains(&item.sell_in) => item.quality += 3,
-        _ if item.sell_in <= 0 => item.quality = 0,
-        _ => item.quality += 1,
-    }
-
-    if item.quality >= 50 {
-        item.quality = 50;
-    }
-    item.sell_in -= 1;
 }
 
 #[cfg(test)]
