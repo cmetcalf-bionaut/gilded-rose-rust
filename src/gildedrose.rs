@@ -137,10 +137,11 @@ mod tests {
 
     #[test]
     fn the_quality_of_an_item_never_negative_following_update() {
+        const ROCK_BOTT0M: i32 = 0;
 
         // Given a general item with no quality what-so-ever
         let crap_item = Item {
-            quality: 0,
+            quality: ROCK_BOTT0M,
             ..Item::default()
         };
 
@@ -150,6 +151,30 @@ mod tests {
         rose.update_quality();
 
         // at least quality stays positive! :D
-        assert!(rose.items[0].quality >= 0);
+        assert!(rose.items[0].quality >= ROCK_BOTT0M);
+    }
+
+    #[test]
+    fn aged_bried_increases_quality_the_older_it_gets() {
+        const CHEESE_FACTOR: i32 = 1;
+
+        // Given a chunk of delicious Brie. Mmmm...
+        // just warmed up in the oven, and covered in jalepeno jelly...
+        //
+        // omg yes.
+        let senior_fromage = Item {
+            name: "Aged Brie".into(),
+            ..Item::default()
+        };
+        let mut rose = generate_one_item_sytem_from_item(senior_fromage);
+
+        // when updated
+        rose.update_quality();
+
+        // THE CHEESE STANDS ALONE.
+        assert_eq!(
+            Item::default().quality + CHEESE_FACTOR,
+            rose.items[0].quality
+        );
     }
 }
