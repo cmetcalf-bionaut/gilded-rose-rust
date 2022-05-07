@@ -89,11 +89,21 @@ mod tests {
     use super::{GildedRose, Item};
 
     #[test]
-    pub fn foo() {
-        let items = vec![Item::new("foo", 0, 0)];
+    pub fn at_update_sell_in_and_quality_reduced_for_general_items() {
+        let name = "General Item";
+        let sell_in = 23;
+        let quality = 13;
+
+        let items = vec![Item::new(name, sell_in, quality)];
         let mut rose = GildedRose::new(items);
+
+        // At the end of each day...
         rose.update_quality();
 
-        assert_eq!("fixme", rose.items[0].name);
+        // Item.sell_in decrements by 1
+        assert_eq!(sell_in - 1, rose.items[0].sell_in);
+
+        // Item.quality decrements by 1
+        assert_eq!(quality - 1, rose.items[0].quality);
     }
 }
