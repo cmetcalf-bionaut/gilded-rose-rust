@@ -38,6 +38,10 @@ trait ConcertTickets {
     fn update(&mut self);
 }
 
+trait Conjured {
+    fn update(&mut self);
+}
+
 impl StandardItem for Item {
     fn update(&mut self) {
         match self {
@@ -79,6 +83,14 @@ impl ConcertTickets for Item {
     }
 }
 
+impl Conjured for Item {
+    fn update(&mut self) {
+        if self.quality > 0 {
+            self.quality -= 2;
+        }
+    }
+}
+
 pub struct GildedRose {
     pub items: Vec<Item>,
 }
@@ -94,6 +106,7 @@ impl GildedRose {
                 "Aged Brie" => AgedBrie::update(item),
                 "Backstage passes to a TAFKAL80ETC concert" => ConcertTickets::update(item),
                 "Sulfuras, Hand of Ragnaros" => LegendaryItem::update(item),
+                "Conjured" => Conjured::update(item),
                 _ => StandardItem::update(item),
             }
         }
@@ -102,7 +115,7 @@ impl GildedRose {
 
 #[cfg(test)]
 mod tests {
-    use super::{GildedRose, Item, StandardItem};
+    use super::{Conjured, GildedRose, Item, StandardItem};
 
     // Legendary items have 80 quality.
     // That's a lot of quality, if you didn't know.
@@ -383,7 +396,9 @@ mod tests {
     #[test]
     fn an_item_can_update_itself_to_reduce_quality_and_sell_in() {
         let mut joe_dirt = Item::default();
-        joe_dirt.update();
+
+        StandardItem::update(&mut joe_dirt);
+
         assert_eq!(Item::default().quality - 1, joe_dirt.quality);
         assert_eq!(Item::default().sell_in - 1, joe_dirt.sell_in);
     }
@@ -395,7 +410,7 @@ mod tests {
             quality: KEEP_ON_KEEPIN_ON,
             ..Item::default()
         };
-        joe_dirt.update();
+        StandardItem::update(&mut joe_dirt);
         assert_eq!(KEEP_ON_KEEPIN_ON, joe_dirt.quality);
     }
 
@@ -406,7 +421,17 @@ mod tests {
             sell_in: KEEP_ON_KEEPIN_ON,
             ..Item::default()
         };
-        joe_dirt.update();
+        StandardItem::update(&mut joe_dirt);
         assert_eq!(Item::default().quality - 2, joe_dirt.quality);
+    }
+
+    #[test]
+    fn conjured_items_degrade_in_quality_twice_as_fast_as_normal() {
+        let mut conjured_item = Item {
+            name: "Conjured".into(),
+            ..Item::default()
+        };
+        Conjured::update(&mut conjured_item);
+        assert_eq!(Item::default().quality - 2, conjured_item.quality);
     }
 }
