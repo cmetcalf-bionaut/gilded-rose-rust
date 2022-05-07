@@ -370,7 +370,14 @@ mod tests {
 
     impl CanUpdateOwnDamnedSelf for Item {
         fn update(&mut self) {
-            if self.quality > 0 {
+            if self.sell_in <= 0 {
+                if self.quality >= 2 {
+                    self.quality -= 2;
+                } else {
+                    self.quality = 0;
+                }
+            }
+            if self.quality > 0 && self.sell_in > 0 {
                 self.quality -= 1;
             }
             self.sell_in -= 1;
@@ -394,5 +401,16 @@ mod tests {
         };
         joe_dirt.update();
         assert_eq!(KEEP_ON_KEEPIN_ON, joe_dirt.quality);
+    }
+
+    #[test]
+    fn once_sell_by_date_has_passed_quality_degrades_twice_as_fast() {
+        const KEEP_ON_KEEPIN_ON: i32 = 0;
+        let mut joe_dirt = Item {
+            sell_in: KEEP_ON_KEEPIN_ON,
+            ..Item::default()
+        };
+        joe_dirt.update();
+        assert_eq!(Item::default().quality - 2, joe_dirt.quality);
     }
 }
