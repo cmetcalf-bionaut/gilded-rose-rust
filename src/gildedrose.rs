@@ -88,6 +88,13 @@ impl GildedRose {
 mod tests {
     use super::{GildedRose, Item};
 
+    // Legendary items have 80 quality.
+    // That's a lot of quality, if you didn't know.
+    const LEGENDARY_STUFF: i32 = 80;
+
+    // Probably like, BTS or NKOTB or something.
+    const KPOP_BOY_BAND_OMG: &str = "Backstage passes to a TAFKAL80ETC concert";
+
     impl Default for Item {
         fn default() -> Item {
             Item {
@@ -207,6 +214,7 @@ mod tests {
         const SULFURAS: &str = "Sulfuras, Hand of Ragnaros";
         let sulfuras = Item {
             name: SULFURAS.into(),
+            quality: LEGENDARY_STUFF,
             ..Item::default()
         };
         let mut rose = generate_one_item_sytem_from_item(sulfuras);
@@ -217,13 +225,12 @@ mod tests {
         // everything stays the same
         assert_eq!(SULFURAS, rose.items[0].name);
         assert_eq!(Item::default().sell_in, rose.items[0].sell_in);
-        assert_eq!(Item::default().quality, rose.items[0].quality);
+        assert_eq!(LEGENDARY_STUFF, rose.items[0].quality);
     }
 
     #[test]
     fn backstage_passes_quality_is_zero_if_sell_in_less_than_zero() {
         // Given a sweet backstage pass to BTS, probably.
-        const KPOP_BOY_BAND_OMG: &str = "Backstage passes to a TAFKAL80ETC concert";
         const BUT_I_MISSED_IT_WAH: i32 = 0;
 
         let ticket = Item {
@@ -247,7 +254,6 @@ mod tests {
     #[test]
     fn backstage_passes_quality_decreases_by_3_if_five_days_or_fewer_left_to_sell() {
         // Given a sweet backstage pass to BTS, probably.
-        const KPOP_BOY_BAND_OMG: &str = "Backstage passes to a TAFKAL80ETC concert";
         const COMING_SOON: i32 = 5;
         const EXCITEMENT_FACTOR: i32 = 3;
 
@@ -276,7 +282,6 @@ mod tests {
     #[test]
     fn backstage_passes_quality_decreases_by_2_if_6_days_left_to_sell() {
         // Given a sweet backstage pass to BTS, probably.
-        const KPOP_BOY_BAND_OMG: &str = "Backstage passes to a TAFKAL80ETC concert";
         const COMING_SOON: i32 = 6;
         const EXCITEMENT_FACTOR: i32 = 2;
 
@@ -305,7 +310,6 @@ mod tests {
     #[test]
     fn backstage_passes_quality_decreases_by_2_if_10_days_left_to_sell() {
         // Given a sweet backstage pass to BTS, probably.
-        const KPOP_BOY_BAND_OMG: &str = "Backstage passes to a TAFKAL80ETC concert";
         const COMING_SOON: i32 = 10;
         const EXCITEMENT_FACTOR: i32 = 2;
 
@@ -334,7 +338,6 @@ mod tests {
     #[test]
     fn backstage_passes_quality_decreases_by_1_if_11_days_left_to_sell() {
         // Given a sweet backstage pass to BTS, probably.
-        const KPOP_BOY_BAND_OMG: &str = "Backstage passes to a TAFKAL80ETC concert";
         const COMING_SOON: i32 = 11;
         const EXCITEMENT_FACTOR: i32 = 1;
 
