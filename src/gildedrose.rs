@@ -90,6 +90,7 @@ mod tests {
 
     #[test]
     pub fn at_update_sell_in_and_quality_reduced_for_general_items() {
+        // Given a general item
         let name = "General Item";
         let sell_in = 23;
         let quality = 13;
@@ -97,7 +98,7 @@ mod tests {
         let items = vec![Item::new(name, sell_in, quality)];
         let mut rose = GildedRose::new(items);
 
-        // At the end of each day...
+        // when updated
         rose.update_quality();
 
         // Item.sell_in decrements by 1
@@ -105,5 +106,23 @@ mod tests {
 
         // Item.quality decrements by 1
         assert_eq!(quality - 1, rose.items[0].quality);
+    }
+
+    #[test]
+    pub fn if_sell_by_date_has_passed_then_quality_degrates_twice_as_fast() {
+        // given a general item
+        let name = "General Item";
+        let quality = 13;
+
+        // if sell_by date has passed...
+        let sell_in = 0;
+
+        // when updated
+        let items = vec![Item::new(name, sell_in, quality)];
+        let mut rose = GildedRose::new(items);
+        rose.update_quality();
+
+        // then quality degrades twice as fast
+        assert_eq!(quality - 2, rose.items[0].quality);
     }
 }
