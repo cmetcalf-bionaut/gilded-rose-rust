@@ -88,6 +88,7 @@ impl Conjured for Item {
         if self.quality > 0 {
             self.quality -= 2;
         }
+        self.sell_in -= 1;
     }
 }
 
@@ -106,7 +107,7 @@ impl GildedRose {
                 "Aged Brie" => AgedBrie::update(item),
                 "Backstage passes to a TAFKAL80ETC concert" => ConcertTickets::update(item),
                 "Sulfuras, Hand of Ragnaros" => LegendaryItem::update(item),
-                "Conjured" => Conjured::update(item),
+                "Conjured Mana Cake" => Conjured::update(item),
                 _ => StandardItem::update(item),
             }
         }
@@ -433,5 +434,6 @@ mod tests {
         };
         Conjured::update(&mut conjured_item);
         assert_eq!(Item::default().quality - 2, conjured_item.quality);
+        assert_eq!(Item::default().sell_in - 1, conjured_item.sell_in);
     }
 }
