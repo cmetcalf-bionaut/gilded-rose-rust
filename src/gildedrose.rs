@@ -119,7 +119,7 @@ mod tests {
     }
 
     #[test]
-    fn if_sell_by_date_has_passed_then_quality_degrates_twice_as_fast() {
+    fn if_sell_in_date_has_passed_then_quality_degrates_twice_as_fast() {
         // given a general item
         // if sell_by date has passed...
         let egg_salad_sandwich = Item {
@@ -241,5 +241,35 @@ mod tests {
 
         assert_eq!(KPOP_BOY_BAND_OMG, rose.items[0].name);
         assert_eq!(0, rose.items[0].quality);
+        assert!(rose.items[0].sell_in < BUT_I_MISSED_IT_WAH);
+    }
+
+    #[test]
+    fn backstage_passes_quality_decreases_by_3_if_five_days_or_fewer_left_to_sell() {
+        // Given a sweet backstage pass to BTS, probably.
+        const KPOP_BOY_BAND_OMG: &str = "Backstage passes to a TAFKAL80ETC concert";
+        const COMING_SOON: i32 = 5;
+        const EXCITEMENT_FACTOR: i32 = 3;
+
+        let ticket = Item {
+            name: KPOP_BOY_BAND_OMG.into(),
+            sell_in: COMING_SOON,
+            ..Item::default()
+        };
+
+        // you went to a place in time!
+        assert!(ticket.quality >= 0); //yup. seems legit.
+        let mut rose = generate_one_item_sytem_from_item(ticket);
+
+        // when updated
+        rose.update_quality();
+
+        // HOLY COW THESE ARE WORTH A BUNCH!
+        assert_eq!(KPOP_BOY_BAND_OMG, rose.items[0].name);
+        assert_eq!(
+            Item::default().quality + EXCITEMENT_FACTOR,
+            rose.items[0].quality
+        );
+        assert_eq!(COMING_SOON - 1, rose.items[0].sell_in);
     }
 }
