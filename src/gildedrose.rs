@@ -21,6 +21,27 @@ impl Display for Item {
     }
 }
 
+trait CanUpdateOwnDamnedSelf {
+    fn update(&mut self);
+}
+
+impl CanUpdateOwnDamnedSelf for Item {
+    fn update(&mut self) {
+        if self.sell_in <= 0 {
+            if self.quality >= 2 {
+                self.quality -= 2;
+            } else {
+                self.quality = 0;
+            }
+        }
+        if self.quality > 0 && self.sell_in > 0 {
+            self.quality -= 1;
+        }
+        self.sell_in -= 1;
+    }
+}
+
+
 pub struct GildedRose {
     pub items: Vec<Item>,
 }
@@ -86,7 +107,7 @@ impl GildedRose {
 
 #[cfg(test)]
 mod tests {
-    use super::{GildedRose, Item};
+    use super::{GildedRose, Item, CanUpdateOwnDamnedSelf};
 
     // Legendary items have 80 quality.
     // That's a lot of quality, if you didn't know.
@@ -362,26 +383,6 @@ mod tests {
             rose.items[0].quality
         );
         assert_eq!(COMING_SOON - 1, rose.items[0].sell_in);
-    }
-
-    trait CanUpdateOwnDamnedSelf {
-        fn update(&mut self);
-    }
-
-    impl CanUpdateOwnDamnedSelf for Item {
-        fn update(&mut self) {
-            if self.sell_in <= 0 {
-                if self.quality >= 2 {
-                    self.quality -= 2;
-                } else {
-                    self.quality = 0;
-                }
-            }
-            if self.quality > 0 && self.sell_in > 0 {
-                self.quality -= 1;
-            }
-            self.sell_in -= 1;
-        }
     }
 
     #[test]
