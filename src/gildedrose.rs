@@ -370,7 +370,9 @@ mod tests {
 
     impl CanUpdateOwnDamnedSelf for Item {
         fn update(&mut self) {
-            self.quality -= 1;
+            if self.quality > 0 {
+                self.quality -= 1;
+            }
             self.sell_in -= 1;
         }
     }
@@ -380,5 +382,17 @@ mod tests {
         let mut joe_dirt = Item::default();
         joe_dirt.update();
         assert_eq!(Item::default().quality - 1, joe_dirt.quality);
+        assert_eq!(Item::default().sell_in - 1, joe_dirt.sell_in);
+    }
+
+    #[test]
+    fn quality_is_never_negative() {
+        const KEEP_ON_KEEPIN_ON: i32 = 0;
+        let mut joe_dirt = Item {
+            quality: KEEP_ON_KEEPIN_ON,
+            ..Item::default()
+        };
+        joe_dirt.update();
+        assert_eq!(KEEP_ON_KEEPIN_ON, joe_dirt.quality);
     }
 }
