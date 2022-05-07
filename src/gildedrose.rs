@@ -88,60 +88,68 @@ impl GildedRose {
 mod tests {
     use super::{GildedRose, Item};
 
-    #[test]
-    pub fn at_update_sell_in_and_quality_reduced_for_general_items() {
-        // Given a general item
-        let name = "General Item";
-        let sell_in = 23;
-        let quality = 13;
+    impl Default for Item {
+        fn default() -> Item {
+            Item {
+                name: "General Item".into(),
+                sell_in: 5,
+                quality: 32,
+            }
+        }
+    }
 
-        let items = vec![Item::new(name, sell_in, quality)];
-        let mut rose = GildedRose::new(items);
+    fn generate_one_item_sytem_from_item(item: Item) -> GildedRose {
+        let items = vec![item];
+        GildedRose::new(items)
+    }
+
+    #[test]
+    fn at_update_sell_in_and_quality_reduced_for_general_items() {
+        // Given a general item
+        let mut rose = generate_one_item_sytem_from_item(Item::default());
 
         // when updated
         rose.update_quality();
 
         // Item.sell_in decrements by 1
-        assert_eq!(sell_in - 1, rose.items[0].sell_in);
+        assert_eq!(Item::default().sell_in - 1, rose.items[0].sell_in);
 
         // Item.quality decrements by 1
-        assert_eq!(quality - 1, rose.items[0].quality);
+        assert_eq!(Item::default().quality - 1, rose.items[0].quality);
     }
 
     #[test]
-    pub fn if_sell_by_date_has_passed_then_quality_degrates_twice_as_fast() {
+    fn if_sell_by_date_has_passed_then_quality_degrates_twice_as_fast() {
         // given a general item
-        let name = "General Item";
-        let quality = 13;
-
         // if sell_by date has passed...
-        let sell_in = 0;
+        let egg_salad_sandwich = Item {
+            sell_in: 0,
+            ..Item::default()
+        };
+        let mut rose = generate_one_item_sytem_from_item(egg_salad_sandwich);
 
         // when updated
-        let items = vec![Item::new(name, sell_in, quality)];
-        let mut rose = GildedRose::new(items);
         rose.update_quality();
 
         // then quality degrades twice as fast
-        assert_eq!(quality - 2, rose.items[0].quality);
+        assert_eq!(Item::default().quality - 2, rose.items[0].quality);
     }
 
     #[test]
-    pub fn the_quality_of_an_item_never_negative_following_update() {
-        // Given a general item
-        let name = "General Item";
-        let sell_in = 0;
-        let quality = 0;
+    fn the_quality_of_an_item_never_negative_following_update() {
 
-        let items = vec![Item::new(name, sell_in, quality)];
-        let mut rose = GildedRose::new(items);
+        // Given a general item with no quality what-so-ever
+        let crap_item = Item {
+            quality: 0,
+            ..Item::default()
+        };
+
+        let mut rose = generate_one_item_sytem_from_item(crap_item);
 
         // when updated
         rose.update_quality();
 
-        // quality is positive! :D
-        assert!(quality >= 0);
+        // at least quality stays positive! :D
+        assert!(rose.items[0].quality >= 0);
     }
-
-
 }
