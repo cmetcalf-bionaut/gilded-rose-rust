@@ -219,4 +219,27 @@ mod tests {
         assert_eq!(Item::default().sell_in, rose.items[0].sell_in);
         assert_eq!(Item::default().quality, rose.items[0].quality);
     }
+
+    #[test]
+    fn backstage_passes_quality_is_zero_if_sell_in_less_than_zero() {
+        // Given a sweet backstage pass to BTS, probably.
+        const KPOP_BOY_BAND_OMG: &str = "Backstage passes to a TAFKAL80ETC concert";
+        const BUT_I_MISSED_IT_WAH: i32 = 0;
+
+        let ticket = Item {
+            name: KPOP_BOY_BAND_OMG.into(),
+            sell_in: BUT_I_MISSED_IT_WAH,
+            ..Item::default()
+        };
+
+        // But you went to a shady scalper after showing up an hour late.
+        assert!(ticket.quality >= 0); //yup. seems legit.
+        let mut rose = generate_one_item_sytem_from_item(ticket);
+
+        // when updated
+        rose.update_quality();
+
+        assert_eq!(KPOP_BOY_BAND_OMG, rose.items[0].name);
+        assert_eq!(0, rose.items[0].quality);
+    }
 }
