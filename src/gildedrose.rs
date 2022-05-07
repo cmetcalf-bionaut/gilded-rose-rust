@@ -60,16 +60,7 @@ impl GildedRose {
                 } else {
                     if item.quality < 50 {
                         item.quality += 1;
-
-                        if item.name == "Backstage passes to a TAFKAL80ETC concert" {
-                            if item.sell_in < 11 && item.quality < 50 {
-                                item.quality += 1;
-                            }
-
-                            if item.sell_in < 6 && item.quality < 50 {
-                                item.quality += 1;
-                            }
-                        }
+                        figure_out_backstage_passes(item);
                     }
                     item.sell_in -= 1;
                     if item.sell_in < 0 {
@@ -84,6 +75,21 @@ impl GildedRose {
                 }
             }
         }
+    }
+}
+
+fn figure_out_backstage_passes(item: &mut Item) {
+    match item.name.as_str() {
+        "Backstage passes to a TAFKAL80ETC concert" => {
+            if item.sell_in < 11 && item.quality < 50 {
+                item.quality += 1;
+            }
+
+            if item.sell_in < 6 && item.quality < 50 {
+                item.quality += 1;
+            }
+        }
+        _ => (),
     }
 }
 
