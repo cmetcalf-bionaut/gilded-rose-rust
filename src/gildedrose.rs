@@ -157,13 +157,14 @@ mod tests {
     #[test]
     fn aged_bried_increases_quality_the_older_it_gets() {
         const CHEESE_FACTOR: i32 = 1;
+        const CON_QUESO: &str = "Aged Brie";
 
         // Given a chunk of delicious Brie. Mmmm...
         // just warmed up in the oven, and covered in jalepeno jelly...
         //
         // omg yes.
         let senior_fromage = Item {
-            name: "Aged Brie".into(),
+            name: CON_QUESO.into(),
             ..Item::default()
         };
         let mut rose = generate_one_item_sytem_from_item(senior_fromage);
@@ -176,14 +177,17 @@ mod tests {
             Item::default().quality + CHEESE_FACTOR,
             rose.items[0].quality
         );
+        assert_eq!(CON_QUESO, rose.items[0].name);
     }
 
     #[test]
     fn quality_never_updates_above_50_if_initially_under_50() {
         // Given a high quality item which could only improve with age
         const TOP_NOTCH_STUFF: i32 = 50;
+        const TO_THE_MOON: &str = "Aged Brie";
+
         let bitcoin = Item {
-            name: "Aged Brie".into(),
+            name: TO_THE_MOON.into(),
             quality: TOP_NOTCH_STUFF,
             ..Item::default()
         };
@@ -194,5 +198,25 @@ mod tests {
 
         // quality does not increase greater than 50
         assert!(rose.items[0].quality <= TOP_NOTCH_STUFF);
+        assert_eq!(TO_THE_MOON, rose.items[0].name);
+    }
+
+    #[test]
+    fn sulfuras_sell_by_and_quality_never_decrease() {
+        // Given a hunk of Sulfurus, which is pretty good stuff.
+        const SULFURAS: &str = "Sulfuras, Hand of Ragnaros";
+        let sulfuras = Item {
+            name: SULFURAS.into(),
+            ..Item::default()
+        };
+        let mut rose = generate_one_item_sytem_from_item(sulfuras);
+
+        // when updated
+        rose.update_quality();
+
+        // everything stays the same
+        assert_eq!(SULFURAS, rose.items[0].name);
+        assert_eq!(Item::default().sell_in, rose.items[0].sell_in);
+        assert_eq!(Item::default().quality, rose.items[0].quality);
     }
 }
