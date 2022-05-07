@@ -27,15 +27,11 @@ trait CanUpdateOwnDamnedSelf {
 
 impl CanUpdateOwnDamnedSelf for Item {
     fn update(&mut self) {
-        if self.sell_in <= 0 {
-            if self.quality >= 2 {
-                self.quality -= 2;
-            } else {
-                self.quality = 0;
-            }
-        }
-        if self.quality > 0 && self.sell_in > 0 {
-            self.quality -= 1;
+        match self {
+            _ if self.sell_in <= 0 && self.quality >= 2 => self.quality -= 2,
+            _ if self.sell_in <= 0 && self.quality <= 0 => self.quality = 0,
+            _ if self.quality > 0 => self.quality -= 1,
+            _ => (),
         }
         self.sell_in -= 1;
     }
@@ -70,13 +66,15 @@ fn figure_out_cheese(item: &mut Item) {
 }
 
 fn figure_out_backstage_passes(item: &mut Item) {
-    if item.quality < 50 {
-        match item {
-            _ if (6..11).contains(&item.sell_in) => item.quality += 2,
-            _ if (1..6).contains(&item.sell_in) => item.quality += 3,
-            _ if item.sell_in <= 0 => item.quality = 0,
-            _ => item.quality += 1,
-        }
+    match item {
+        _ if (6..11).contains(&item.sell_in) => item.quality += 2,
+        _ if (1..6).contains(&item.sell_in) => item.quality += 3,
+        _ if item.sell_in <= 0 => item.quality = 0,
+        _ => item.quality += 1,
+    }
+
+    if item.quality >= 50 {
+        item.quality = 50;
     }
     item.sell_in -= 1;
 }
