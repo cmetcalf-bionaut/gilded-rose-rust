@@ -65,9 +65,6 @@ impl GildedRose {
                     item.sell_in -= 1;
                     if item.sell_in < 0 {
                         if item.name != "Aged Brie" {
-                            if item.name == "Backstage passes to a TAFKAL80ETC concert" {
-                                item.quality = 0;
-                            }
                         } else if item.quality < 50 {
                             item.quality += item.quality + 1;
                         }
@@ -81,14 +78,28 @@ impl GildedRose {
 fn figure_out_backstage_passes(item: &mut Item) {
     match item.name.as_str() {
         "Backstage passes to a TAFKAL80ETC concert" => {
-            if item.sell_in < 11 && item.quality < 50 {
-                item.quality += 1;
-            }
-
-            if item.sell_in < 6 && item.quality < 50 {
-                item.quality += 1;
+            if item.quality < 50 {
+                match item {
+                    Item {
+                        sell_in: _,
+                        quality: _,
+                        ..
+                    } if item.sell_in < 11 && item.sell_in >= 6 => item.quality += 1,
+                    Item {
+                        sell_in: _,
+                        quality: _,
+                        ..
+                    } if item.sell_in < 6 && item.sell_in > 0 => item.quality += 2,
+                    Item {
+                        sell_in: _,
+                        quality: _,
+                        ..
+                    } if item.sell_in <= 0 => item.quality = 0,
+                    _ => (),
+                }
             }
         }
+
         _ => (),
     }
 }
