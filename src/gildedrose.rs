@@ -272,4 +272,91 @@ mod tests {
         );
         assert_eq!(COMING_SOON - 1, rose.items[0].sell_in);
     }
+
+    #[test]
+    fn backstage_passes_quality_decreases_by_2_if_6_days_left_to_sell() {
+        // Given a sweet backstage pass to BTS, probably.
+        const KPOP_BOY_BAND_OMG: &str = "Backstage passes to a TAFKAL80ETC concert";
+        const COMING_SOON: i32 = 6;
+        const EXCITEMENT_FACTOR: i32 = 2;
+
+        let ticket = Item {
+            name: KPOP_BOY_BAND_OMG.into(),
+            sell_in: COMING_SOON,
+            ..Item::default()
+        };
+
+        // you went to a place in time!
+        assert!(ticket.quality >= 0); //yup. seems legit.
+        let mut rose = generate_one_item_sytem_from_item(ticket);
+
+        // when updated
+        rose.update_quality();
+
+        // HOLY COW THESE ARE WORTH A BUNCH!
+        assert_eq!(KPOP_BOY_BAND_OMG, rose.items[0].name);
+        assert_eq!(
+            Item::default().quality + EXCITEMENT_FACTOR,
+            rose.items[0].quality
+        );
+        assert_eq!(COMING_SOON - 1, rose.items[0].sell_in);
+    }
+
+    #[test]
+    fn backstage_passes_quality_decreases_by_2_if_10_days_left_to_sell() {
+        // Given a sweet backstage pass to BTS, probably.
+        const KPOP_BOY_BAND_OMG: &str = "Backstage passes to a TAFKAL80ETC concert";
+        const COMING_SOON: i32 = 10;
+        const EXCITEMENT_FACTOR: i32 = 2;
+
+        let ticket = Item {
+            name: KPOP_BOY_BAND_OMG.into(),
+            sell_in: COMING_SOON,
+            ..Item::default()
+        };
+
+        // you went to a place in time!
+        assert!(ticket.quality >= 0); //yup. seems legit.
+        let mut rose = generate_one_item_sytem_from_item(ticket);
+
+        // when updated
+        rose.update_quality();
+
+        // HOLY COW THESE ARE WORTH A BUNCH!
+        assert_eq!(KPOP_BOY_BAND_OMG, rose.items[0].name);
+        assert_eq!(
+            Item::default().quality + EXCITEMENT_FACTOR,
+            rose.items[0].quality
+        );
+        assert_eq!(COMING_SOON - 1, rose.items[0].sell_in);
+    }
+
+    #[test]
+    fn backstage_passes_quality_decreases_by_1_if_11_days_left_to_sell() {
+        // Given a sweet backstage pass to BTS, probably.
+        const KPOP_BOY_BAND_OMG: &str = "Backstage passes to a TAFKAL80ETC concert";
+        const COMING_SOON: i32 = 11;
+        const EXCITEMENT_FACTOR: i32 = 1;
+
+        let ticket = Item {
+            name: KPOP_BOY_BAND_OMG.into(),
+            sell_in: COMING_SOON,
+            ..Item::default()
+        };
+
+        // you went to a place in time!
+        assert!(ticket.quality >= 0); //yup. seems legit.
+        let mut rose = generate_one_item_sytem_from_item(ticket);
+
+        // when updated
+        rose.update_quality();
+
+        // HOLY COW THESE ARE WORTH A BUNCH!
+        assert_eq!(KPOP_BOY_BAND_OMG, rose.items[0].name);
+        assert_eq!(
+            Item::default().quality + EXCITEMENT_FACTOR,
+            rose.items[0].quality
+        );
+        assert_eq!(COMING_SOON - 1, rose.items[0].sell_in);
+    }
 }
