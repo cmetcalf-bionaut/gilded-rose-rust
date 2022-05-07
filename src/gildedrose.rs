@@ -363,4 +363,22 @@ mod tests {
         );
         assert_eq!(COMING_SOON - 1, rose.items[0].sell_in);
     }
+
+    trait CanUpdateOwnDamnedSelf {
+        fn update(&mut self);
+    }
+
+    impl CanUpdateOwnDamnedSelf for Item {
+        fn update(&mut self) {
+            self.quality -= 1;
+            self.sell_in -= 1;
+        }
+    }
+
+    #[test]
+    fn an_item_can_update_itself_to_reduce_quality_and_sell_in() {
+        let mut joe_dirt = Item::default();
+        joe_dirt.update();
+        assert_eq!(Item::default().quality - 1, joe_dirt.quality);
+    }
 }
