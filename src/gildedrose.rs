@@ -177,4 +177,22 @@ mod tests {
             rose.items[0].quality
         );
     }
+
+    #[test]
+    fn quality_never_updates_above_50_if_initially_under_50() {
+        // Given a high quality item which could only improve with age
+        const TOP_NOTCH_STUFF: i32 = 50;
+        let bitcoin = Item {
+            name: "Aged Brie".into(),
+            quality: TOP_NOTCH_STUFF,
+            ..Item::default()
+        };
+        let mut rose = generate_one_item_sytem_from_item(bitcoin);
+
+        // when updated
+        rose.update_quality();
+
+        // quality does not increase greater than 50
+        assert!(rose.items[0].quality <= TOP_NOTCH_STUFF);
+    }
 }
