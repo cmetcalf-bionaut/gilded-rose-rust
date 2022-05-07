@@ -22,11 +22,23 @@ impl Display for Item {
 }
 
 // NO touching anytthing above this point !!
-trait CanUpdateOwnDamnedSelf {
+trait StandardItem {
     fn update(&mut self);
 }
 
-impl CanUpdateOwnDamnedSelf for Item {
+trait AgedBrie {
+    fn update(&mut self);
+}
+
+trait LegendaryItem {
+    fn update(&mut self);
+}
+
+trait ConcertTickets {
+    fn update(&mut self);
+}
+
+impl StandardItem for Item {
     fn update(&mut self) {
         match self {
             _ if self.sell_in <= 0 && self.quality >= 2 => self.quality -= 2,
@@ -38,32 +50,32 @@ impl CanUpdateOwnDamnedSelf for Item {
     }
 }
 
-struct IsCheese<'a>(&'a mut Item);
-impl CanUpdateOwnDamnedSelf for IsCheese<'_> {
+impl AgedBrie for Item {
     fn update(&mut self) {
-        let IsCheese(item) = self;
-        if item.quality < 50 {
-            item.quality += 1;
+        if self.quality < 50 {
+            self.quality += 1;
         }
-        item.sell_in -= 1;
+        self.sell_in -= 1;
     }
 }
 
-struct IsTickets<'a>(&'a mut Item);
-impl CanUpdateOwnDamnedSelf for IsTickets<'_> {
+impl LegendaryItem for Item {
+    fn update(&mut self) {}
+}
+
+impl ConcertTickets for Item {
     fn update(&mut self) {
-        let IsTickets(item) = self;
-        match item {
-            _ if (6..11).contains(&item.sell_in) => item.quality += 2,
-            _ if (1..6).contains(&item.sell_in) => item.quality += 3,
-            _ if item.sell_in <= 0 => item.quality = 0,
-            _ => item.quality += 1,
+        match self {
+            _ if (6..11).contains(&self.sell_in) => self.quality += 2,
+            _ if (1..6).contains(&self.sell_in) => self.quality += 3,
+            _ if self.sell_in <= 0 => self.quality = 0,
+            _ => self.quality += 1,
         }
 
-        if item.quality >= 50 {
-            item.quality = 50;
+        if self.quality >= 50 {
+            self.quality = 50;
         }
-        item.sell_in -= 1;
+        self.sell_in -= 1;
     }
 }
 
@@ -79,10 +91,10 @@ impl GildedRose {
     pub fn update_quality(&mut self) {
         for item in &mut self.items {
             match item.name.as_str() {
-                "Aged Brie" => IsCheese(item).update(),
-                "Backstage passes to a TAFKAL80ETC concert" => IsTickets(item).update(),
-                "Sulfuras, Hand of Ragnaros" => (),
-                _ => item.update(),
+                "Aged Brie" => AgedBrie::update(item),
+                "Backstage passes to a TAFKAL80ETC concert" => ConcertTickets::update(item),
+                "Sulfuras, Hand of Ragnaros" => LegendaryItem::update(item),
+                _ => StandardItem::update(item),
             }
         }
     }
@@ -90,7 +102,7 @@ impl GildedRose {
 
 #[cfg(test)]
 mod tests {
-    use super::{CanUpdateOwnDamnedSelf, GildedRose, Item};
+    use super::{GildedRose, Item, StandardItem};
 
     // Legendary items have 80 quality.
     // That's a lot of quality, if you didn't know.
