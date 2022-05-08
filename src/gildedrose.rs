@@ -22,76 +22,80 @@ impl Display for Item {
 }
 
 // NO touching anytthing above this point !!
-trait StandardItem {
-    fn update(&mut self);
-}
 
-trait AgedBrie {
-    fn update(&mut self);
-}
+mod item_types {
+    use crate::Item;
+    pub trait StandardItem {
+        fn update(&mut self);
+    }
+    pub trait AgedBrie {
+        fn update(&mut self);
+    }
 
-trait LegendaryItem {
-    fn update(&mut self);
-}
+    pub trait LegendaryItem {
+        fn update(&mut self);
+    }
 
-trait ConcertTickets {
-    fn update(&mut self);
-}
+    pub trait Conjured {
+        fn update(&mut self);
+    }
 
-trait Conjured {
-    fn update(&mut self);
-}
+    pub trait ConcertTickets {
+        fn update(&mut self);
+    }
 
-impl StandardItem for Item {
-    fn update(&mut self) {
-        match self {
-            _ if self.sell_in <= 0 && self.quality >= 2 => self.quality -= 2,
-            _ if self.sell_in <= 0 && self.quality <= 0 => self.quality = 0,
-            _ if self.quality > 0 => self.quality -= 1,
-            _ => (),
+    impl StandardItem for Item {
+        fn update(&mut self) {
+            match self {
+                _ if self.sell_in <= 0 && self.quality >= 2 => self.quality -= 2,
+                _ if self.sell_in <= 0 && self.quality <= 0 => self.quality = 0,
+                _ if self.quality > 0 => self.quality -= 1,
+                _ => (),
+            }
+            self.sell_in -= 1;
         }
-        self.sell_in -= 1;
+    }
+
+    impl AgedBrie for Item {
+        fn update(&mut self) {
+            if self.quality < 50 {
+                self.quality += 1;
+            }
+            self.sell_in -= 1;
+        }
+    }
+
+    impl LegendaryItem for Item {
+        fn update(&mut self) {}
+    }
+
+    impl ConcertTickets for Item {
+        fn update(&mut self) {
+            match self {
+                _ if (6..11).contains(&self.sell_in) => self.quality += 2,
+                _ if (1..6).contains(&self.sell_in) => self.quality += 3,
+                _ if self.sell_in <= 0 => self.quality = 0,
+                _ => self.quality += 1,
+            }
+
+            if self.quality >= 50 {
+                self.quality = 50;
+            }
+            self.sell_in -= 1;
+        }
+    }
+
+    impl Conjured for Item {
+        fn update(&mut self) {
+            if self.quality > 0 {
+                self.quality -= 2;
+            }
+            self.sell_in -= 1;
+        }
     }
 }
 
-impl AgedBrie for Item {
-    fn update(&mut self) {
-        if self.quality < 50 {
-            self.quality += 1;
-        }
-        self.sell_in -= 1;
-    }
-}
-
-impl LegendaryItem for Item {
-    fn update(&mut self) {}
-}
-
-impl ConcertTickets for Item {
-    fn update(&mut self) {
-        match self {
-            _ if (6..11).contains(&self.sell_in) => self.quality += 2,
-            _ if (1..6).contains(&self.sell_in) => self.quality += 3,
-            _ if self.sell_in <= 0 => self.quality = 0,
-            _ => self.quality += 1,
-        }
-
-        if self.quality >= 50 {
-            self.quality = 50;
-        }
-        self.sell_in -= 1;
-    }
-}
-
-impl Conjured for Item {
-    fn update(&mut self) {
-        if self.quality > 0 {
-            self.quality -= 2;
-        }
-        self.sell_in -= 1;
-    }
-}
-
+use item_types::*;
 pub struct GildedRose {
     pub items: Vec<Item>,
 }
