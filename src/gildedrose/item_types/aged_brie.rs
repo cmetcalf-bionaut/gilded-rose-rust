@@ -1,4 +1,7 @@
 use crate::Item;
+
+const NAME: &'static str = "Aged Brie";
+
 pub trait AgedBrie {
     fn update(&mut self);
 }
@@ -15,6 +18,29 @@ impl AgedBrie for Item {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    pub fn set_brie(item: Item) -> Option<impl AgedBrie> {
+        if item.name == NAME {
+            Some(item)
+        } else {
+            None
+        }
+    }
+
+    #[test]
+    fn if_name_is_not_aged_brie_return_none() {
+        let item = Item::default();
+        assert!(set_brie(item).is_none());
+    }
+
+    #[test]
+    fn if_name_is_aged_brie_return_some() {
+        let item = Item {
+            name: NAME.to_string(),
+            ..Default::default()
+        };
+        assert!(set_brie(item).is_some());
+    }
 
     #[test]
     fn at_update_sell_in_decrements_by_one() {
