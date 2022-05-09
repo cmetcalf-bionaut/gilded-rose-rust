@@ -1,7 +1,8 @@
 use crate::Item;
-pub trait StandardItem {
-    fn update(&mut self);
-}
+
+pub mod standard_item;
+pub use standard_item::StandardItem;
+
 pub trait AgedBrie {
     fn update(&mut self);
 }
@@ -16,18 +17,6 @@ pub trait Conjured {
 
 pub trait ConcertTickets {
     fn update(&mut self);
-}
-
-impl StandardItem for Item {
-    fn update(&mut self) {
-        match self {
-            _ if self.sell_in <= 0 && self.quality >= 2 => self.quality -= 2,
-            _ if self.sell_in <= 0 && self.quality <= 0 => self.quality = 0,
-            _ if self.quality > 0 => self.quality -= 1,
-            _ => (),
-        }
-        self.sell_in -= 1;
-    }
 }
 
 impl AgedBrie for Item {

@@ -38,7 +38,7 @@ impl GildedRose {
     pub fn update_quality(&mut self) {
         for item in &mut self.items {
             match item.name.as_str() {
-                "Aged Brie" => AgedBrie::update(item),
+                "Aged Brie" => AgedBrie::update(item), // update.item(),
                 "Backstage passes to a TAFKAL80ETC concert" => ConcertTickets::update(item),
                 "Sulfuras, Hand of Ragnaros" => LegendaryItem::update(item),
                 "Conjured Mana Cake" => Conjured::update(item),
