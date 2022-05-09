@@ -1,13 +1,11 @@
 use crate::Item;
 
+pub mod legendary;
 pub mod standard_item;
+pub use legendary::LegendaryItem;
 pub use standard_item::StandardItem;
 
 pub trait AgedBrie {
-    fn update(&mut self);
-}
-
-pub trait LegendaryItem {
     fn update(&mut self);
 }
 
@@ -26,10 +24,6 @@ impl AgedBrie for Item {
         }
         self.sell_in -= 1;
     }
-}
-
-impl LegendaryItem for Item {
-    fn update(&mut self) {}
 }
 
 impl ConcertTickets for Item {
