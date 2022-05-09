@@ -1,13 +1,12 @@
 use crate::Item;
 
+pub mod aged_brie;
 pub mod legendary;
 pub mod standard_item;
+
+pub use aged_brie::AgedBrie;
 pub use legendary::LegendaryItem;
 pub use standard_item::StandardItem;
-
-pub trait AgedBrie {
-    fn update(&mut self);
-}
 
 pub trait Conjured {
     fn update(&mut self);
@@ -15,15 +14,6 @@ pub trait Conjured {
 
 pub trait ConcertTickets {
     fn update(&mut self);
-}
-
-impl AgedBrie for Item {
-    fn update(&mut self) {
-        if self.quality < 50 {
-            self.quality += 1;
-        }
-        self.sell_in -= 1;
-    }
 }
 
 impl ConcertTickets for Item {
