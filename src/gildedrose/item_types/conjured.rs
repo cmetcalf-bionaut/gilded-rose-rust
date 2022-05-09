@@ -1,12 +1,12 @@
 use crate::Item;
-pub trait AgedBrie {
+pub trait Conjured {
     fn update(&mut self);
 }
 
-impl AgedBrie for Item {
+impl Conjured for Item {
     fn update(&mut self) {
-        if self.quality < 50 {
-            self.quality += 1;
+        if self.quality > 0 {
+            self.quality -= 2;
         }
         self.sell_in -= 1;
     }
@@ -26,20 +26,9 @@ mod tests {
     }
 
     #[test]
-    fn aged_brie_quality_increases_with_age() {
+    fn conjured_items_decrease_in_quality_twice_as_fast_as_normal_items() {
         let mut item = Item::default();
         item.update();
-        assert_eq!(item.quality, Item::default().quality + 1);
-    }
-
-    #[test]
-    fn quality_never_increases_over_50() {
-        let mut item = Item {
-            quality: 50,
-            ..Default::default()
-        };
-
-        item.update();
-        assert!(item.quality <= 50);
+        assert_eq!(item.quality, Item::default().quality - 2);
     }
 }
