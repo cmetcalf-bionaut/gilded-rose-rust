@@ -1,5 +1,6 @@
 use crate::Item;
 pub trait LegendaryItem {
+    const NAME: &'static str = "Sulfuras, Hand of Ragnaros";
     fn update(&mut self);
 }
 

@@ -1,13 +1,12 @@
 use crate::Item;
 pub trait Conjured {
+    const NAME: &'static str = "Conjured Mana Cake";
     fn update(&mut self);
 }
 
 impl Conjured for Item {
     fn update(&mut self) {
-        if self.quality > 0 {
-            self.quality -= 2;
-        }
+        self.quality.is_positive().then(|| self.quality -= 2);
         self.sell_in -= 1;
     }
 }

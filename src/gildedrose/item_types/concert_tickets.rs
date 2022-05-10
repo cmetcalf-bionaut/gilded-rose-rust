@@ -1,5 +1,7 @@
 use crate::Item;
+
 pub trait ConcertTickets {
+    const NAME: &'static str = "Backstage passes to a TAFKAL80ETC concert";
     fn update(&mut self);
 }
 
@@ -11,10 +13,7 @@ impl ConcertTickets for Item {
             _ if self.sell_in <= 0 => self.quality = 0,
             _ => self.quality += 1,
         }
-
-        if self.quality >= 50 {
-            self.quality = 50;
-        }
+        (self.quality >= 50).then(|| self.quality = 50);
         self.sell_in -= 1;
     }
 }
