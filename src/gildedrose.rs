@@ -24,7 +24,7 @@ impl Display for Item {
 // NO touching anytthing above this point !!
 
 pub mod item_types;
-use item_types::*;
+use item_types::UpdateItem;
 
 pub struct GildedRose {
     pub items: Vec<Item>,
@@ -37,20 +37,14 @@ impl GildedRose {
 
     pub fn update_quality(&mut self) {
         for item in &mut self.items {
-            match item.name.as_str() {
-                <Item as AgedBrie>::NAME => AgedBrie::update(item),
-                <Item as ConcertTickets>::NAME => ConcertTickets::update(item),
-                <Item as LegendaryItem>::NAME => LegendaryItem::update(item),
-                <Item as Conjured>::NAME => Conjured::update(item),
-                _ => StandardItem::update(item),
-            }
+            item.update();
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{Conjured, GildedRose, Item, StandardItem};
+    use super::{GildedRose, Item};
 
     // Legendary items have 80 quality.
     // That's a lot of quality, if you didn't know.
@@ -330,44 +324,48 @@ mod tests {
 
     #[test]
     fn an_item_can_update_itself_to_reduce_quality_and_sell_in() {
-        let mut joe_dirt = Item::default();
+        let joe_dirt = Item::default();
+        let mut rose = generate_one_item_sytem_from_item(joe_dirt);
+        rose.update_quality();
 
-        StandardItem::update(&mut joe_dirt);
-
-        assert_eq!(Item::default().quality - 1, joe_dirt.quality);
-        assert_eq!(Item::default().sell_in - 1, joe_dirt.sell_in);
+        assert_eq!(Item::default().quality - 1, rose.items[0].quality);
+        assert_eq!(Item::default().sell_in - 1, rose.items[0].sell_in);
     }
 
     #[test]
     fn quality_is_never_negative() {
         const KEEP_ON_KEEPIN_ON: i32 = 0;
-        let mut joe_dirt = Item {
+        let joe_dirt = Item {
             quality: KEEP_ON_KEEPIN_ON,
             ..Item::default()
         };
-        StandardItem::update(&mut joe_dirt);
-        assert_eq!(KEEP_ON_KEEPIN_ON, joe_dirt.quality);
+        let mut rose = generate_one_item_sytem_from_item(joe_dirt);
+        rose.update_quality();
+        assert_eq!(KEEP_ON_KEEPIN_ON, rose.items[0].quality);
     }
 
     #[test]
     fn once_sell_by_date_has_passed_quality_degrades_twice_as_fast() {
         const KEEP_ON_KEEPIN_ON: i32 = 0;
-        let mut joe_dirt = Item {
+        let joe_dirt = Item {
             sell_in: KEEP_ON_KEEPIN_ON,
             ..Item::default()
         };
-        StandardItem::update(&mut joe_dirt);
-        assert_eq!(Item::default().quality - 2, joe_dirt.quality);
+        let mut rose = generate_one_item_sytem_from_item(joe_dirt);
+        rose.update_quality();
+        assert_eq!(Item::default().quality - 2, rose.items[0].quality);
     }
 
     #[test]
     fn conjured_items_degrade_in_quality_twice_as_fast_as_normal() {
-        let mut conjured_item = Item {
-            name: "Conjured".into(),
+        let conjured_item = Item {
+            name: "Conjured Mana Cake".into(),
             ..Item::default()
         };
-        Conjured::update(&mut conjured_item);
-        assert_eq!(Item::default().quality - 2, conjured_item.quality);
-        assert_eq!(Item::default().sell_in - 1, conjured_item.sell_in);
+
+        let mut rose = generate_one_item_sytem_from_item(conjured_item);
+        rose.update_quality();
+        assert_eq!(Item::default().quality - 2, rose.items[0].quality);
+        assert_eq!(Item::default().sell_in - 1, rose.items[0].sell_in);
     }
 }
